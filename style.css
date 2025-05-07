@@ -89,5 +89,9 @@ body {
     flex: 1;
     border-radius: 30px;
     border: #333 solid 2px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding: 1rem;
 }
 
