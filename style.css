@@ -63,11 +63,13 @@ body {
     gap: 5px;
 }
 
+
+
 .row>button {
     flex: 1;
     border-radius: 5px;
     font-size: large;
-    /* border: #333 solid 1px; */
+    border: #333 solid 1px;
 }
 
 .row>button:hover {
@@ -81,6 +83,7 @@ body {
 .row>button:target {
     background-color: #333;
 }
+
 #display {
     margin: 1rem;
     flex: 1;
