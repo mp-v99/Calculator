@@ -143,7 +143,7 @@ backSpaceButton.addEventListener('click', () => {
             secondOperand = '';
             operator = '';
             isDisplayEmpty = true;
-            isDecimal = true;
+            isDecimalTrue = true;
             displayResult.textContent = '';
         }
         else if (firstOperand.length >= 1) {
