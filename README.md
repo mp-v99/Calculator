@@ -7,7 +7,8 @@ An intuitive browser-based calculator built with JavaScript, HTML & CSS
 Built with ❤️ during The Odin Project Foundations
 
 📤 Deployment
-Live Preview: 
+
+Live Preview: https://mp-v99.github.io/Calculator/
 
 🚀 Introduction
 
