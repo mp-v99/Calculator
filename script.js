@@ -30,3 +30,54 @@ let firstOperand = '';
 let secondOperand = '';
 let operator = '';
 
+
+// Number Buttons Evenet Listener
+
+
+numberButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+        if (!operator) {
+            if(firstOperand.length <= 11) {
+                firstOperand += button.textContent;
+            }
+        }
+        else {
+            if(secondOperand.length <= 11) {
+                secondOperand += button.textContent;
+            }
+        }
+    }) 
+})
+
+// Operator Buttons Event Listener
+
+operatorButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+        if (!operator && firstOperand) {
+            operator += button.textContent;
+        }
+    })
+});
+
+// Equal Button Event Listener
+
+
+equalButton.addEventListener('click', () => {
+    switch(operator) {
+        case '÷': 
+            displayResult.textContent = divide(parseInt(firstOperand), parseInt(secondOperand))
+        break;
+        case 'x':
+            displayResult.textContent = multiply(parseInt(firstOperand), parseInt(secondOperand))
+        break;
+        case '+':
+            displayResult.textContent = add(parseInt(firstOperand), parseInt(secondOperand))
+        break;
+        case '-':
+            displayResult.textContent = subtract(parseInt(firstOperand), parseInt(secondOperand))
+        break;
+    }
+    firstOperand = '';
+    secondOperand = '';
+    operator = '';
+})
