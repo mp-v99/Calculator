@@ -56,3 +56,8 @@ Git – version control
 
 GitHub – deployment & commits
 
+## 📸 Screenshots
+
+![Calculator Screenshot](icon/Calculator_screenshot.png)
+
+
