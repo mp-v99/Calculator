@@ -121,48 +121,33 @@ document.addEventListener('keydown', (e) => {
 const operate = function(firstOperand, secondOperand, operator) {
     switch(operator) {
         case '÷': 
-            displayResult.textContent = divide(firstOperand, secondOperand)
-            operation.firstOperand = divide(firstOperand, secondOperand) // Reassign the result to the first operand to do chain evaluation
+            displayResult.textContent = mathFunctions.divide(firstOperand, secondOperand)
+            operation.firstOperand = mathFunctions.divide(firstOperand, secondOperand) // Reassign the result to the first operand to do chain evaluation
         break;
         case 'x':
-            displayResult.textContent = multiply(firstOperand, secondOperand)
-            operation.firstOperand = multiply(firstOperand, secondOperand)
+            displayResult.textContent = mathFunctions.multiply(firstOperand, secondOperand)
+            operation.firstOperand = mathFunctions.multiply(firstOperand, secondOperand)
         break;
         case '+':
-            displayResult.textContent = add(firstOperand, secondOperand)
-            operation.firstOperand = add(firstOperand, secondOperand)
+            displayResult.textContent = mathFunctions.add(firstOperand, secondOperand)
+            operation.firstOperand = mathFunctions.add(firstOperand, secondOperand)
         break;
         case '-':
-            displayResult.textContent = subtract(firstOperand, secondOperand)
-            operation.firstOperand = subtract(firstOperand, secondOperand)
+            displayResult.textContent = mathFunctions.subtract(firstOperand, secondOperand)
+            operation.firstOperand = mathFunctions.subtract(firstOperand, secondOperand)
         break;
     }
 }
 
 // Math functions
 
-const add = function(a, b) {
-    return Math.round((parseFloat(a)+ parseFloat(b)) * 1000) / 1000;
-  };
-  
-const subtract = function(a, b) {
-    return Math.round((parseFloat(a)- parseFloat(b)) * 1000) / 1000;
-};
+const mathFunctions = {
+    add: (a, b) => a + b,
+    subtract: (a, b) => a - b,
+    divide: (a, b) => a / b,
+    multiply: (a, b) => a * b,
+}
 
-const divide = function(a, b) {
-    if (b == 0) {
-        operation.firstOperand = ''
-        operation.secondOperand = '';
-        operation.operator = '';
-        isJokeMessage = true;
-        return `Well, if you're dividing by zero, you're not doing math — you're performing an act of metaphysical rebellion against reality itself.`
-    }
-    return Math.round((parseFloat(a)/ parseFloat(b)) * 1000) / 1000;
-};
-
-const multiply = function(a, b) {
-    return Math.round((parseFloat(a)* parseFloat(b)) * 1000) / 1000;
-};
 
 
 // Listener Buttons Functions:
@@ -209,8 +194,10 @@ const operatorButtonsFunction = function(operator) {
 
 const equalsFunction = function() {
     if (operation.firstOperand  && operation.secondOperand) {
+        let a = parseFloat(operation.firstOperand);
+        let b = parseFloat(operation.secondOperand);
         console.table(operation);
-        operate(operation.firstOperand, operation.secondOperand, operation.operator);
+        operate(a, b, operation.operator);
         isDisplayEmpty = true;
         operation.secondOperand = '';
         operation.operator = '';
