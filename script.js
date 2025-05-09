@@ -100,7 +100,6 @@ document.addEventListener('keydown', (e) => {
         break;
         case '*':
             operatorButtonsFunction('x');
-             operatorButtonsFunction('÷')
         break;
         case '+':
             operatorButtonsFunction(e.key);
