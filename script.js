@@ -7,19 +7,32 @@ const clearButton = document.querySelector('#btn-clear');
 const backSpaceButton = document.querySelector('#btn-backspace');
 const displayResult = document.querySelector('#result');
 
+// Booleans 
 
 let isDisplayEmpty = true;
 let isDecimalEmpty = true;
 let isJokeMessage = false;
 
-let operation = {
-    firstOperand: '',
+
+// Error message
+
+let JokeMessage = `Well, if you're dividing by zero, you're not doing math — you're performing an act of metaphysical rebellion against reality itself.`
+
+// operation object: Operands and operator stored as strings for display purposes.    
+// Parsed into numbers inside evaluateExpression() only when needed.
+
+let operation = {    
+    firstOperand: '', 
     secondOperand: '',
     operator: '',
 };
 
-// Number Buttons Event Listener
+// Round Result:
 
+const roundResult = (n) => Math.round(n * 1000) /1000;
+
+
+// Number Buttons Event Listener
 
 numberButtons.forEach((button) => { 
     button.addEventListener('click', (e) => {
@@ -29,9 +42,22 @@ numberButtons.forEach((button) => {
 
 // Operator Buttons Event Listener
 
+
+
 operatorButtons.forEach((button) => {
     button.addEventListener('click', () => {
-        operatorButtonsFunction(button.textContent);
+        // Pass an operator is operator is empty
+        if (!operation.operator) {
+            operatorButtonsFunction(button.textContent);
+        }
+        // Switch operator
+        else  if (button.textContent != operation.operator) {
+            operatorButtonsFunction(button.textContent);           
+        }
+        // If the same operator is pressed twice, evaluate firstOperand with self
+        else {
+            evaluateExpression(operation.firstOperand, operation.firstOperand, operation.operator);
+        }
     })
 });
 
@@ -39,7 +65,7 @@ operatorButtons.forEach((button) => {
 
 
 equalButton.addEventListener('click', () => {
-    equalsFunction();
+    evaluateExpression(operation.firstOperand, operation.secondOperand, operation.operator);
 });
 
 // Clear Button Event Listener 
@@ -57,10 +83,9 @@ backSpaceButton.addEventListener('click', () => {
 // Keyboard Event Listeners
 
 document.addEventListener('keydown', (e) => {
-    console.log(e.key)
     switch(e.key) {
         case 'Enter':
-            equalsFunction();
+            evaluateExpression(operation.firstOperand, operation.secondOperand, operation.operator);
         break;
         case 'Escape':
             clearFunction();
@@ -69,17 +94,23 @@ document.addEventListener('keydown', (e) => {
             backspaceFunction();
         break;
         case '/':
-            operatorButtonsFunction('÷');
+            !operation.operator ? 
+                operatorButtonsFunction('÷'):
+                evaluateExpression(operation.firstOperand, operation.firstOperand, operation.operator)
         break;
         case '*':
             operatorButtonsFunction('x');
+             operatorButtonsFunction('÷')
         break;
         case '+':
             operatorButtonsFunction(e.key);
         break;
         case '-':
             operatorButtonsFunction(e.key);
-        break;    
+        break;   
+        case '%':
+            operatorButtonsFunction(e.key);
+        break;
         case '0':
             numberButtonsFunction(e.key, e.key);
         break;
@@ -119,24 +150,42 @@ document.addEventListener('keydown', (e) => {
 // Operate function
 
 const operate = function(firstOperand, secondOperand, operator) {
+    let result;
     switch(operator) {
         case '÷': 
-            displayResult.textContent = mathFunctions.divide(firstOperand, secondOperand)
-            operation.firstOperand = mathFunctions.divide(firstOperand, secondOperand) // Reassign the result to the first operand to do chain evaluation
-        break;
+            result = mathFunctions.divide(firstOperand, secondOperand);
+         
+            break;
         case 'x':
-            displayResult.textContent = mathFunctions.multiply(firstOperand, secondOperand)
-            operation.firstOperand = mathFunctions.multiply(firstOperand, secondOperand)
-        break;
+            result = mathFunctions.multiply(firstOperand, secondOperand);
+            break;
         case '+':
-            displayResult.textContent = mathFunctions.add(firstOperand, secondOperand)
-            operation.firstOperand = mathFunctions.add(firstOperand, secondOperand)
-        break;
+            result = mathFunctions.add(firstOperand, secondOperand);
+            break;
         case '-':
-            displayResult.textContent = mathFunctions.subtract(firstOperand, secondOperand)
-            operation.firstOperand = mathFunctions.subtract(firstOperand, secondOperand)
-        break;
+            result = mathFunctions.subtract(firstOperand, secondOperand);
+            break;
+        case '%':
+            result = mathFunctions.remainder(firstOperand, secondOperand);
+            break;
+        default:
+            result = 0;
     }
+    // Check if divided by zero to return error message
+    if (secondOperand === 0 && operator === '÷' || secondOperand === 0 && operator === '%' ) {
+        result = JokeMessage;
+        isJokeMessage = true;
+    }
+    else {
+        roundResult(result); 
+    }
+    // Display the result & assign the result to the first operand
+    displayResult.textContent = result;
+    operation.firstOperand = result;
+    operation.secondOperand = '';
+    operation.operator = '';
+    isDisplayEmpty = true;
+    isDecimalEmpty = true;
 }
 
 // Math functions
@@ -146,6 +195,7 @@ const mathFunctions = {
     subtract: (a, b) => a - b,
     divide: (a, b) => a / b,
     multiply: (a, b) => a * b,
+    remainder: (a, b) => a % b
 }
 
 
@@ -192,18 +242,11 @@ const operatorButtonsFunction = function(operator) {
     }
 }
 
-const equalsFunction = function() {
-    if (operation.firstOperand  && operation.secondOperand) {
-        let a = parseFloat(operation.firstOperand);
-        let b = parseFloat(operation.secondOperand);
-        console.table(operation);
-        operate(a, b, operation.operator);
-        isDisplayEmpty = true;
-        operation.secondOperand = '';
-        operation.operator = '';
-        isDecimalEmpty = true;
-        isOperatorEmpty = true;
-        
+const evaluateExpression = function(a, b, operator) {
+    if (a && b) {
+        firstOperand = parseFloat(a);
+        secondOperand = parseFloat(b);
+        operate(firstOperand, secondOperand, operator);
     }
 }
 
@@ -213,7 +256,6 @@ const clearFunction = function() {
     operation.operator = '';
     isDisplayEmpty = true;
     isDecimalEmpty = true;
-    isOperatorEmpty = true;
     displayResult.textContent = '';
 };
 
@@ -224,7 +266,6 @@ const backspaceFunction = function() {
     }
     else if (operation.operator.length == 1) {
         operation.operator = operation.operator.slice(0, -1);
-        isOperatorEmpty = true;
         displayResult.textContent = displayResult.textContent.slice(0,-1); 
     }
     else if (typeof operation.firstOperand === 'number' || isJokeMessage) { // Clear everything in case the first operand                                                                
@@ -233,7 +274,6 @@ const backspaceFunction = function() {
         operation.operator = '';
         isDisplayEmpty = true;
         isDecimalEmpty = true;
-        isOperatorEmpty = true;
         isJokeMessage = false;
         displayResult.textContent = '';
     }
