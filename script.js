@@ -46,18 +46,11 @@ numberButtons.forEach((button) => {
 
 operatorButtons.forEach((button) => {
     button.addEventListener('click', () => {
-        // Pass an operator is operator is empty
-        if (!operation.operator) {
-            operatorButtonsFunction(button.textContent);
-        }
-        // Switch operator
-        else  if (button.textContent != operation.operator) {
-            operatorButtonsFunction(button.textContent);           
-        }
-        // If the same operator is pressed twice, evaluate firstOperand with self
-        else {
-            evaluateExpression(operation.firstOperand, operation.firstOperand, operation.operator);
-        }
+        button.textContent != operation.operator 
+         // Pass an operator if its empty || or switch previous operator
+        ? operatorButtonsFunction(button.textContent)         
+        // If the same operator is pressed twice, evaluate firstOperand with self     
+        : evaluateExpression(operation.firstOperand, operation.firstOperand, operation.operator);   
     })
 });
 
@@ -94,21 +87,29 @@ document.addEventListener('keydown', (e) => {
             backspaceFunction();
         break;
         case '/':
-            !operation.operator ? 
-                operatorButtonsFunction('÷'):
-                evaluateExpression(operation.firstOperand, operation.firstOperand, operation.operator)
+            operation.operator != '÷'  
+            ? operatorButtonsFunction('÷')
+            : evaluateExpression(operation.firstOperand, operation.firstOperand, '÷')
         break;
         case '*':
-            operatorButtonsFunction('x');
+            operation.operator != 'x' 
+            ? operatorButtonsFunction('x')
+            : evaluateExpression(operation.firstOperand, operation.firstOperand, 'x')
         break;
         case '+':
-            operatorButtonsFunction(e.key);
+            e.key != operation.operator 
+            ? operatorButtonsFunction(e.key)
+            : evaluateExpression(operation.firstOperand, operation.firstOperand, operation.operator)
         break;
         case '-':
-            operatorButtonsFunction(e.key);
+            e.key != operation.operator 
+            ? operatorButtonsFunction(e.key)
+            : evaluateExpression(operation.firstOperand, operation.firstOperand, operation.operator)
         break;   
         case '%':
-            operatorButtonsFunction(e.key);
+            e.key != operation.operator 
+            ? operatorButtonsFunction(e.key)
+            : evaluateExpression(operation.firstOperand, operation.firstOperand, operation.operator)
         break;
         case '0':
             numberButtonsFunction(e.key, e.key);
