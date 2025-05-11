@@ -10,7 +10,6 @@ const displayResult = document.querySelector('#result');
 // Booleans 
 
 let isDisplayEmpty = true;
-let isDecimalEmpty = true;
 let isJokeMessage = false;
 
 
@@ -36,7 +35,7 @@ const roundResult = (n) => Math.round(n * 1000) /1000;
 
 numberButtons.forEach((button) => { 
     button.addEventListener('click', (e) => {
-       numberButtonsFunction(button.textContent, e.target.id);
+       appendOperand(button.textContent, e.target.id);
     }) 
 })
 
@@ -48,7 +47,7 @@ operatorButtons.forEach((button) => {
     button.addEventListener('click', () => {
         button.textContent != operation.operator 
          // Pass an operator if its empty || or switch previous operator
-        ? operatorButtonsFunction(button.textContent)         
+        ? appendOperator(button.textContent)         
         // If the same operator is pressed twice, evaluate firstOperand with self     
         : evaluateExpression(operation.firstOperand, operation.firstOperand, operation.operator);   
     })
@@ -88,61 +87,61 @@ document.addEventListener('keydown', (e) => {
         break;
         case '/':
             operation.operator != '÷'  
-            ? operatorButtonsFunction('÷')
+            ? appendOperator('÷')
             : evaluateExpression(operation.firstOperand, operation.firstOperand, '÷')
         break;
         case '*':
             operation.operator != 'x' 
-            ? operatorButtonsFunction('x')
+            ? appendOperator('x')
             : evaluateExpression(operation.firstOperand, operation.firstOperand, 'x')
         break;
         case '+':
             e.key != operation.operator 
-            ? operatorButtonsFunction(e.key)
+            ? appendOperator(e.key)
             : evaluateExpression(operation.firstOperand, operation.firstOperand, operation.operator)
         break;
         case '-':
             e.key != operation.operator 
-            ? operatorButtonsFunction(e.key)
+            ? appendOperator(e.key)
             : evaluateExpression(operation.firstOperand, operation.firstOperand, operation.operator)
         break;   
         case '%':
             e.key != operation.operator 
-            ? operatorButtonsFunction(e.key)
+            ? appendOperator(e.key)
             : evaluateExpression(operation.firstOperand, operation.firstOperand, operation.operator)
         break;
         case '0':
-            numberButtonsFunction(e.key, e.key);
+            appendOperand(e.key, e.key);
         break;
         case '1':
-            numberButtonsFunction(e.key, e.key);
+            appendOperand(e.key, e.key);
         break;
         case '2':
-            numberButtonsFunction(e.key, e.key);
+            appendOperand(e.key, e.key);
         break;
         case '3':
-            numberButtonsFunction(e.key, e.key);
+            appendOperand(e.key, e.key);
         break;
         case '4':
-            numberButtonsFunction(e.key, e.key);
+            appendOperand(e.key, e.key);
         break;
         case '5':
-            numberButtonsFunction(e.key, e.key);
+            appendOperand(e.key, e.key);
         break;
         case '6':
-            numberButtonsFunction(e.key, e.key);
+            appendOperand(e.key, e.key);
         break;
         case '7':
-            numberButtonsFunction(e.key, e.key);
+            appendOperand(e.key, e.key);
         break;
         case '8':
-            numberButtonsFunction(e.key, e.key);
+            appendOperand(e.key, e.key);
         break;
         case '9':
-            numberButtonsFunction(e.key, e.key);
+            appendOperand(e.key, e.key);
         break;
         case '.':
-            numberButtonsFunction(e.key, e.key);
+            appendOperand(e.key, e.key);
         break;
     }
 })
@@ -185,7 +184,6 @@ const operate = function(firstOperand, secondOperand, operator) {
     operation.secondOperand = '';
     operation.operator = '';
     isDisplayEmpty = true;
-    isDecimalEmpty = true;
 }
 
 // Math functions
@@ -200,45 +198,66 @@ const mathFunctions = {
 
 
 
-// Listener Buttons Functions:
 
-const numberButtonsFunction = function(number, e) {
-    if (isDisplayEmpty && !operation.operator) { // This condition allows to reset in case the user types a new number after getting a result
+
+const resetOperation = function() {
         displayResult.textContent = '';
         operation.firstOperand = '';
         isDisplayEmpty = false;
         isJokeMessage = false;
+}
+
+// Append Operand Function
+
+const appendOperand = function(operandValue) {
+    if (isDisplayEmpty && !operation.operator) { // This condition allows to reset in case the user types a new number after getting a result
+        resetOperation();
     }
-    if (!operation.operator) { // This condition prevents from adding more digits after having selected an operator
-        if(e === '.' && isDecimalEmpty && operation.firstOperand.length >= 1) { // Adds the dot only if the dot hasn't been used and there's at least one digit in the operand
-            operation.firstOperand += number
-            displayResult.textContent += number;
-            isDecimalEmpty = false;
+    if (!operation.operator) { // Append first operand
+        if (operandValue === '.' && operation.firstOperand.length < 1) { // When display is empty, append a single followed by a decimal
+            operation.firstOperand += `0${operandValue}`;
+            displayResult.textContent += `0${operandValue}`;
         }
-        else if(operation.firstOperand.length <= 11 && e !== '.') {  // This condition limits the length of the operand
-            operation.firstOperand += number
-            displayResult.textContent += number;
+        else if (operandValue === '.' && !operation.firstOperand.includes('.')) { // Append a decimal, only if it doesn't exist yet
+            operation.firstOperand += operandValue;
+            displayResult.textContent += operandValue;
         }
-    }
-    else {
-        if(e === '.' && isDecimalEmpty && operation.secondOperand.length >= 1) {
-            operation.secondOperand += number
-            displayResult.textContent += number;
-            isDecimalEmpty = false;
+        else if (operation.firstOperand === '0' && operation.firstOperand.length == 1) { // Append a single 0 if there's no value or switch from tha 0 to any starting value
+            operation.firstOperand = operandValue;
+            displayResult.textContent = operandValue;
         }
-        else if(operation.secondOperand.length <= 11 && e !== '.') {
-            operation.secondOperand += number;
-            displayResult.textContent += number;
+        else if (operation.firstOperand.length <= 12 && operandValue != '.'){ // Limit the amount of digits to 12 and prevent from adding a second decimal
+            operation.firstOperand += operandValue;
+            displayResult.textContent += operandValue;
         }
     }
+    else if (operation.operator) { // Append second operand
+        if (operandValue === '.' && operation.secondOperand.length < 1) { // When display is empty, append a single followed by a decimal
+            operation.secondOperand += `0${operandValue}`;
+            displayResult.textContent += `0${operandValue}`;
+        }
+        else if (operandValue === '.' && !operation.secondOperand.includes('.')) { // Append a decimal, only if it doesn't exist yet
+            operation.secondOperand += operandValue;
+            displayResult.textContent += operandValue;
+        }
+        else if (operation.secondOperand === '0' && operation.secondOperand.length == 1) { // Append a single 0 if there's no value or switch from that 0 to any starting value
+            operation.secondOperand = operandValue;
+            displayResult.textContent = operation.firstOperand + operation.operator + operandValue;
+            console.table(operation)
+        }
+        else if (operation.secondOperand.length <= 12 && operandValue != '.'){ // Limit the amount of digits to 12 and prevent from adding a second decimal
+            operation.secondOperand += operandValue;
+            displayResult.textContent += operandValue;
+        }
+    }
+   
 };
 
-const operatorButtonsFunction = function(operator) {
+const appendOperator = function(operator) {
     if (operation.firstOperand && !isJokeMessage) { // prevents behavior where a new operation can be started when joke message is displayed
         operation.operator = '';
         operation.operator = operator;
         displayResult.textContent = operation.firstOperand + operator;
-        isDecimalEmpty = true; // This allows to add a decimal to the second operand
     }
 }
 
@@ -255,7 +274,6 @@ const clearFunction = function() {
     operation.secondOperand = '';
     operation.operator = '';
     isDisplayEmpty = true;
-    isDecimalEmpty = true;
     displayResult.textContent = '';
 };
 
@@ -273,7 +291,6 @@ const backspaceFunction = function() {
         operation.secondOperand = '';                                     // the mocking message when dividing by zero
         operation.operator = '';
         isDisplayEmpty = true;
-        isDecimalEmpty = true;
         isJokeMessage = false;
         displayResult.textContent = '';
     }
