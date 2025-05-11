@@ -45,11 +45,15 @@ numberButtons.forEach((button) => {
 
 operatorButtons.forEach((button) => {
     button.addEventListener('click', () => {
-        button.textContent != operation.operator 
-         // Pass an operator if its empty || or switch previous operator
-        ? appendOperator(button.textContent)         
-        // If the same operator is pressed twice, evaluate firstOperand with self     
-        : evaluateExpression(operation.firstOperand, operation.firstOperand, operation.operator);   
+         // Pass an operator if its empty || or switch operator if there's no secondOperand 
+        if (button.textContent != operation.operator && operation.secondOperand === '') {
+            appendOperator(button.textContent);
+            console.log(`${operation.operator}`)
+        }
+        // If the same operator is pressed twice, evaluate firstOperand with self 
+        else if (operation.secondOperand === '') {
+            evaluateExpression(operation.firstOperand, operation.firstOperand, operation.operator);  
+        }
     })
 });
 
@@ -213,44 +217,30 @@ const appendOperand = function(operandValue) {
     if (isDisplayEmpty && !operation.operator) { // This condition allows to reset in case the user types a new number after getting a result
         resetOperation();
     }
-    if (!operation.operator) { // Append first operand
-        if (operandValue === '.' && operation.firstOperand.length < 1) { // When display is empty, append a single followed by a decimal
-            operation.firstOperand += `0${operandValue}`;
-            displayResult.textContent += `0${operandValue}`;
+    let targetOperand = !operation.operator ? 'firstOperand' : 'secondOperand';
+    let currentOperand = operation[targetOperand];
+    if (operandValue === '.' && currentOperand.length < 1) { // When display is empty, append a single followed by a decimal
+        operation[targetOperand] += `0${operandValue}`;
+        displayResult.textContent += `0${operandValue}`;
+    }
+    else if (operandValue === '.' && !currentOperand.includes('.')) { // Append a decimal, only if it doesn't exist yet
+        operation[targetOperand] += operandValue;
+        displayResult.textContent += operandValue;
+    }
+    else if (currentOperand === '0' && currentOperand.length == 1) { // Append a single 0 if there's no value or remove a leading zero
+        if (targetOperand == 'secondOperand') {
+            operation[targetOperand] = operandValue;
+            displayResult.textContent = operation.firstOperand + operation.operator + operandValue;
         }
-        else if (operandValue === '.' && !operation.firstOperand.includes('.')) { // Append a decimal, only if it doesn't exist yet
-            operation.firstOperand += operandValue;
-            displayResult.textContent += operandValue;
-        }
-        else if (operation.firstOperand === '0' && operation.firstOperand.length == 1) { // Append a single 0 if there's no value or switch from tha 0 to any starting value
-            operation.firstOperand = operandValue;
+        else {
+            operation[targetOperand] = operandValue;
             displayResult.textContent = operandValue;
         }
-        else if (operation.firstOperand.length <= 12 && operandValue != '.'){ // Limit the amount of digits to 12 and prevent from adding a second decimal
-            operation.firstOperand += operandValue;
-            displayResult.textContent += operandValue;
-        }
     }
-    else if (operation.operator) { // Append second operand
-        if (operandValue === '.' && operation.secondOperand.length < 1) { // When display is empty, append a single followed by a decimal
-            operation.secondOperand += `0${operandValue}`;
-            displayResult.textContent += `0${operandValue}`;
-        }
-        else if (operandValue === '.' && !operation.secondOperand.includes('.')) { // Append a decimal, only if it doesn't exist yet
-            operation.secondOperand += operandValue;
-            displayResult.textContent += operandValue;
-        }
-        else if (operation.secondOperand === '0' && operation.secondOperand.length == 1) { // Append a single 0 if there's no value or switch from that 0 to any starting value
-            operation.secondOperand = operandValue;
-            displayResult.textContent = operation.firstOperand + operation.operator + operandValue;
-            console.table(operation)
-        }
-        else if (operation.secondOperand.length <= 12 && operandValue != '.'){ // Limit the amount of digits to 12 and prevent from adding a second decimal
-            operation.secondOperand += operandValue;
-            displayResult.textContent += operandValue;
-        }
+    else if (currentOperand.length <= 12 && operandValue != '.'){ // Limit the amount of digits to 12 and prevent from adding a second decimal
+        operation[targetOperand] += operandValue;
+        displayResult.textContent += operandValue;
     }
-   
 };
 
 const appendOperator = function(operator) {
