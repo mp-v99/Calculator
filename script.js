@@ -61,7 +61,7 @@ const operate = function(firstOperand, secondOperand, operator) {
     }
     // Display the result & assign the result to the first operand
     displayResult.textContent = result;
-    operation.firstOperand = result;
+    operation.firstOperand = result.toString();
     operation.secondOperand = '';
     operation.operator = '';
     isDisplayEmpty = true;
@@ -92,10 +92,16 @@ const plusMinusToggle = function(targetOperand) {
         displayResult.textContent = operation[targetOperand];
         isFirstOperandPositive = false;
     }
-    else if (targetOperand === 'firstOperand' && !isFirstOperandPositive) {
+    else if (targetOperand === 'firstOperand' && !isFirstOperandPositive && operation[targetOperand].startsWith('(-')) {
         operation[targetOperand] = operation[targetOperand].slice(2, -1);
         displayResult.textContent = operation[targetOperand];
         isFirstOperandPositive = true;
+    }
+    else if (targetOperand === 'firstOperand' && !isFirstOperandPositive && operation[targetOperand].startsWith('-')) {
+        operation[targetOperand] = operation[targetOperand].slice(1);
+        displayResult.textContent = operation[targetOperand];
+        isFirstOperandPositive = true;
+        isDisplayEmpty = false;
     }
     else if (targetOperand === 'secondOperand' && isSecondOperandPositive) {
         operation[targetOperand] = `(-${operation[targetOperand]})`;
@@ -112,7 +118,7 @@ const plusMinusToggle = function(targetOperand) {
 // Append Operand Function
 
 const appendOperand = function(operandValue) {
-    if (isDisplayEmpty && !operation.operator) { // This condition allows to reset in case the user types a new number after getting a result
+    if (isDisplayEmpty && !operation.operator && operandValue != '±') { // This condition allows to reset in case the user types a new number after getting a result
         resetOperation();
     }
     let targetOperand = !operation.operator ? 'firstOperand' : 'secondOperand';
@@ -154,13 +160,13 @@ const appendOperator = function(operator) {
 
 const evaluateExpression = function(a, b, operator) {
     if (a && b) {
-        if (!isFirstOperandPositive && !isSecondOperandPositive) {
+        if (!isFirstOperandPositive && !isSecondOperandPositive && a.startsWith('(-')) {
             a = a.slice(2,-1);
             a = '-' + a
             b = b.slice(2,-1);
             b = '-' + b
         }
-        else if (!isFirstOperandPositive) {
+        else if (!isFirstOperandPositive && a.startsWith('(-')) {
             a = a.slice(2,-1);
             a = '-' + a
         }
@@ -168,11 +174,15 @@ const evaluateExpression = function(a, b, operator) {
             b = b.slice(2,-1);
             b = '-' + b
         }
-
         firstOperand = parseFloat(a);
         secondOperand = parseFloat(b);
         operate(firstOperand, secondOperand, operator);
-        isFirstOperandPositive = true;
+        if (operation.firstOperand >= 0) {
+            isFirstOperandPositive = true;
+        }
+        else if (operation.firstOperand < 0) {
+            isFirstOperandPositive = false;
+        }
         isSecondOperandPositive = true;
     }
 }
@@ -191,7 +201,6 @@ const backspaceFunction = function() {
             operation.secondOperand = operation.secondOperand.slice(2,-1);
             displayResult.textContent = operation.firstOperand + operation.operator + operation.secondOperand;
             isSecondOperandPositive = true;
-            console.log('it is doing this');
         }
         else {
             operation.secondOperand = operation.secondOperand.slice(0, -1);
