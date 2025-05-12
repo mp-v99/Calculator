@@ -134,7 +134,7 @@ const appendOperand = function(operandValue) {
         operation[targetOperand] += operandValue;
         displayResult.textContent += operandValue;
     }
-    else if (currentOperand === '0' && currentOperand.length == 1) { // Append a single 0 if there's no value and prevent multiple zeroes(0000)
+    else if (currentOperand === '0' && currentOperand.length == 1 && operandValue != '±') { // Append a single 0 if there's no value and prevent multiple zeroes(0000)
         if (targetOperand == 'secondOperand') {
             operation[targetOperand] = operandValue;
             displayResult.textContent = operation.firstOperand + operation.operator + operandValue;
