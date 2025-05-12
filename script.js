@@ -57,7 +57,7 @@ const operate = function(firstOperand, secondOperand, operator) {
         isJokeMessage = true;
     }
     else {
-        roundResult(result); 
+        result = roundResult(result); 
     }
     // Display the result & assign the result to the first operand
     displayResult.textContent = result;
