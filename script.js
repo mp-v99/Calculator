@@ -117,7 +117,7 @@ const appendOperand = function(operandValue) {
     }
     let targetOperand = !operation.operator ? 'firstOperand' : 'secondOperand';
     let currentOperand = operation[targetOperand];
-    if (operandValue === '±' && currentOperand.length >= 1) {
+    if (operandValue === '±' && currentOperand.length >= 1 && currentOperand != '0') {
         plusMinusToggle(targetOperand);
     }
     if (operandValue === '.' && currentOperand.length < 1 && operandValue != '±') { // When display is empty, append a single followed by a decimal
@@ -159,7 +159,6 @@ const evaluateExpression = function(a, b, operator) {
             a = '-' + a
             b = b.slice(2,-1);
             b = '-' + b
-            console.log('it is doing this')
         }
         else if (!isFirstOperandPositive) {
             a = a.slice(2,-1);
@@ -173,6 +172,8 @@ const evaluateExpression = function(a, b, operator) {
         firstOperand = parseFloat(a);
         secondOperand = parseFloat(b);
         operate(firstOperand, secondOperand, operator);
+        isFirstOperandPositive = true;
+        isSecondOperandPositive = true;
     }
 }
 
@@ -186,8 +187,16 @@ const clearFunction = function() {
 
 const backspaceFunction = function() {
     if (operation.secondOperand.length >= 1) {
-        operation.secondOperand = operation.secondOperand.slice(0, -1);
-        displayResult.textContent = displayResult.textContent.slice(0,-1);
+        if (!isSecondOperandPositive) {
+            operation.secondOperand = operation.secondOperand.slice(2,-1);
+            displayResult.textContent = operation.firstOperand + operation.operator + operation.secondOperand;
+            isSecondOperandPositive = true;
+            console.log('it is doing this');
+        }
+        else {
+            operation.secondOperand = operation.secondOperand.slice(0, -1);
+            displayResult.textContent = displayResult.textContent.slice(0,-1);
+        }
     }
     else if (operation.operator.length == 1) {
         operation.operator = operation.operator.slice(0, -1);
@@ -202,8 +211,15 @@ const backspaceFunction = function() {
         displayResult.textContent = '';
     }
     else if (operation.firstOperand.length >= 1) {
-        operation.firstOperand = operation.firstOperand.slice(0, -1);
-        displayResult.textContent = displayResult.textContent.slice(0,-1);
+        if (!isFirstOperandPositive) {
+            operation.firstOperand = operation.firstOperand.slice(2,-1);
+            displayResult.textContent = displayResult.textContent.slice(2,-1);
+            isFirstOperandPositive = true;
+        }
+        else {
+            operation.firstOperand = operation.firstOperand.slice(0, -1);
+            displayResult.textContent = displayResult.textContent.slice(0,-1);
+        }
     }
 };
 
