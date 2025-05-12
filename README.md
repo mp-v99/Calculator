@@ -10,6 +10,10 @@ This project marks the finale of The Odin Project’s Foundations course where I
 
 Give it a go and let me know if you managed to get a NaN or any sort of unexpected behavior!
 
+🌌Discord:  
+
+mp_v99_95592 
+
 📤 Deployment
 
 Live Preview: https://mp-v99.github.io/Calculator/
