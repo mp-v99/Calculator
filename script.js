@@ -126,15 +126,15 @@ const appendOperand = function(operandValue) {
     if (operandValue === '±' && currentOperand.length >= 1 && currentOperand != '0') {
         plusMinusToggle(targetOperand);
     }
-    if (operandValue === '.' && currentOperand.length < 1 && operandValue != '±') { // When display is empty, append a single followed by a decimal
+    if (operandValue === '.' && currentOperand.length < 1) { // When display is empty, append a single zero followed by a decimal
         operation[targetOperand] += `0${operandValue}`;
         displayResult.textContent += `0${operandValue}`;
     }
-    else if (operandValue === '.' && !currentOperand.includes('.') && operandValue != '±') { // Append a decimal, only if it doesn't exist yet
+    else if (operandValue === '.' && !currentOperand.includes('.') && !operation[targetOperand].includes(')')) { // Append a decimal, only if it doesn't exist yet
         operation[targetOperand] += operandValue;
         displayResult.textContent += operandValue;
     }
-    else if (currentOperand === '0' && currentOperand.length == 1 && operandValue != '±') { // Append a single 0 if there's no value or remove a leading zero
+    else if (currentOperand === '0' && currentOperand.length == 1) { // Append a single 0 if there's no value and prevent multiple zeroes(0000)
         if (targetOperand == 'secondOperand') {
             operation[targetOperand] = operandValue;
             displayResult.textContent = operation.firstOperand + operation.operator + operandValue;
@@ -144,7 +144,7 @@ const appendOperand = function(operandValue) {
             displayResult.textContent = operandValue;
         }
     }
-    else if (currentOperand.length <= 12 && operandValue != '.' && operandValue != '±'){ // Limit the amount of digits to 12 and prevent from adding a second decimal
+    else if (currentOperand.length <= 12 && operandValue != '.' && operandValue != '±' && !operation[targetOperand].includes(')')){ // Limit the amount of digits to 12 and prevent from adding a second decimal
         operation[targetOperand] += operandValue;
         displayResult.textContent += operandValue;
     }
