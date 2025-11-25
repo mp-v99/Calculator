@@ -9,7 +9,7 @@
 body {
   font-family: sans-serif;
   line-height: 1.6;
-  background-color: #efefef;
+  background-color: #a77c7c;
   color: #333;
   display: flex;
   height: 100vh;
@@ -28,9 +28,14 @@ body {
     height: 500px;
     width: 320px;
     border-radius: 30px;
-    border: #333 solid 2px;
+    border: white solid 5px;
     display: flex;
     flex-direction: column;
+
+    background-color: #333;
+    color: white;
+
+    box-shadow: inset 1px 1px 10px 5px black;
 }
 
 #calculator>#keyboard {
@@ -88,10 +93,12 @@ body {
     margin: 1rem;
     flex: 1;
     border-radius: 30px;
-    border: #333 solid 2px;
+    border: white solid 2px;
     display: flex;
     justify-content: flex-end;
     align-items: flex-end;
     padding: 1rem;
+
+    background-color: rgb(56, 80, 62);
 }
 
