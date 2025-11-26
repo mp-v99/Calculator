@@ -6,13 +6,24 @@
   padding: 0;
 }
 
+:root {
+    --main-bg-color: #1b271e;
+    --display-bg-color: #3d523df0;
+    --btn-bg-color: #85a085;
+    --calculator-bg-color: #ffffff40;
+    --backspace-btn-color: rgb(247, 108, 108);
+    --clear-btn-color: rgb(230, 221, 108);
+    --btn-hover-highlight-color: #ffffff8f;
+}
+
 body {
   font-family: sans-serif;
   line-height: 1.6;
-  background-color: #a77c7c;
+  background-color: var(--main-bg-color);
   color: #333;
   display: flex;
   height: 100vh;
+  min-height: 600px;
   width: 100vw;
 }
 
@@ -25,26 +36,41 @@ body {
 }
 
 #calculator {
-    height: 500px;
-    width: 320px;
+    min-height: 600px;
+    height: 65%;
+    
+    width: 35%;
+    min-width: 440px;
     border-radius: 30px;
-    border: white solid 5px;
+    border: black solid 8px;
     display: flex;
     flex-direction: column;
 
-    background-color: #333;
+    background-color: var(--calculator-bg-color);
     color: white;
 
-    box-shadow: inset 1px 1px 10px 5px black;
+    box-shadow: inset 1px 1px 5px 1px black;
+}
+
+#btn-backspace {
+    background-color: var(--backspace-btn-color);
+}
+
+#btn-clear {
+    background-color: var(--clear-btn-color);
+}
+
+#btn-backspace:focus-visible,
+#btn-clear:focus-visible {
+    outline: none;   /* custom glowing outline */
+    opacity: 80%;
+    outline-offset: 3px;          /* little spacing looks cleaner */      
 }
 
 #calculator>#keyboard {
     flex: 2;
     display: flex;
     flex-direction: column;
-    padding: 1rem;
-    gap: 5px;
-
 }
 
 
@@ -52,14 +78,18 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    padding-bottom: 1rem;
+    gap: 1rem;
 }
 
-#keyboard>#keyboard_low_part {
+#keyboard>#keyboard_high_part>div {
     flex: 1;
     display: flex;
-    flex-direction: column;
-    gap: 5px;
+
+    gap: 0.9rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+
 }
 
 #keyboard .row{
@@ -70,19 +100,57 @@ body {
 
 
 
-.row>button {
+.row > button {
     flex: 1;
-    border-radius: 5px;
+
+    /* Shape */
+    border-radius: 6px;
+    padding: 0.3rem 0.4rem;
+
+    /* Typography */
     font-size: large;
-    border: #333 solid 1px;
+    font-weight: bold;
+
+    /* Remove default border */
+    border: none;
+
+    /* 3D VINTAGE CALCULATOR MAGIC */
+    background: var(--btn-bg-color);
+    box-shadow:
+        2px 5px 3px hsl(0, 0%, 0%),                 /* hard bottom edge */
+        inset 0 3px 3px rgba(255,255,255,0.25), /* top highlight */
+        inset 1px -5px 6px rgba(0,0,0,0.7);        /* bottom inner shadow */
+
+    /* Interaction */
+    transition: transform 0.05s ease;
+
+    /* Flex to center content */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--main-bg-color);
 }
+
 
 .row>button:hover {
-    background-color: #75c5a2;
+    background-color: var(--btn-hover-highlight-color);
+    scale: 1.02;
 }
 
+.row > button:focus-visible {
+    outline: none;   /* custom glowing outline */
+    background-color: var(--btn-hover-highlight-color);
+    outline-offset: 3px;          /* little spacing looks cleaner */      
+}
+
+
 .row>button:active {
-    opacity: 75%;
+    scale: 1;
+    box-shadow:
+    1px -1px 0px hsl(0, 0%, 0%),                 /* hard bottom edge */
+    inset 0 3px 3px rgba(255,255,255,0.25), /* top highlight */
+    inset 1px -5px 6px rgba(0,0,0,0.7);  
 }
 
 .row>button:target {
@@ -93,12 +161,12 @@ body {
     margin: 1rem;
     flex: 1;
     border-radius: 30px;
-    border: white solid 2px;
+    border: black solid 5px;
     display: flex;
     justify-content: flex-end;
     align-items: flex-end;
     padding: 1rem;
 
-    background-color: rgb(56, 80, 62);
+    background-color: var(--display-bg-color);
 }
 
